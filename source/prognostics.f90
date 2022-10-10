@@ -13,15 +13,15 @@ module prognostics
     public initialize_prognostics
 
     ! Prognostic spectral variables
-    complex(p) :: vor(mx,nx,kx,2)    !! Vorticity
-    complex(p) :: div(mx,nx,kx,2)    !! Divergence
-    complex(p) :: t(mx,nx,kx,2)      !! Absolute temperature
-    complex(p) :: ps(mx,nx,2)        !! Log of (normalised) surface pressure (p_s/p0)
-    complex(p) :: tr(mx,nx,kx,2,ntr) !! Tracers (tr(1): specific humidity in g/kg)
+    complex(p), allocatable :: vor(:,:,:,:)  !! Vorticity
+    complex(p), allocatable :: div(:,:,:,:)  !! Divergence
+    complex(p), allocatable :: t(:,:,:,:)    !! Absolute temperature
+    complex(p), allocatable :: ps(:,:,:)     !! Log of (normalised) surface pressure (p_s/p0)
+    complex(p), allocatable :: tr(:,:,:,:,:) !! Tracers (tr(1): specific humidity in g/kg)
 
     ! Geopotential
-    complex(p) :: phi(mx,nx,kx) !! Atmospheric geopotential
-    complex(p) :: phis(mx,nx)   !! Surface geopotential
+    complex(p), allocatable :: phi(:,:,:)    !! Atmospheric geopotential
+    complex(p), allocatable :: phis(:,:)     !! Surface geopotential
 
     character(len=*), parameter :: initfile = "init.nc" !! Restart file
 
@@ -30,6 +30,8 @@ contains
     !  atmosphere or a restart file.
     subroutine initialize_prognostics
         logical :: init_file_exists
+        allocate(vor(mx,nx,kx,2), div(mx,nx,kx,2), t(mx,nx,kx,2), ps(mx,nx,2), &
+                 tr(mx,nx,kx,2,ntr), phi(mx,nx,kx), phis(mx,nx))
         inquire(file=initfile, exist=init_file_exists)
         if (init_file_exists) then
             call initialize_from_file
@@ -145,10 +147,12 @@ contains
         use input_output, only: output
         use geopotential, only: get_geopotential
 
-        complex(p), dimension(mx,nx) :: ucosm, vcosm
-        real(p), dimension(ix,il,kx) :: u_grid, v_grid, s_grid
+        complex(p), dimension(:,:), allocatable :: ucosm, vcosm
+        real(p), dimension(:,:,:), allocatable :: u_grid, v_grid, s_grid
         integer :: j, k
 
+        allocate(ucosm(mx,nx), vcosm(mx,nx), &
+            u_grid(ix,il,kx), v_grid(ix,il,kx), s_grid(ix,il,kx))
         ! 1. Compute spectral surface geopotential
         phis = grid_to_spec(phis0)
 

@@ -72,16 +72,22 @@ contains
 
         complex(p) :: dumc(mx,nx,2)
 
-        real(p), dimension(ix,il,kx) :: utend, vtend, ttend
-        real(p) :: trtend(ix,il,kx,ntr)
+        real(p), dimension(:,:,:), allocatable :: utend, vtend, ttend
+        real(p), dimension(:,:,:,:), allocatable :: trtend
 
-        real(p), dimension(ix,il,kx) :: ug, vg, tg, vorg, divg, tgg, puv
-        real(p), dimension(ix,il) :: px, py, umean, vmean, dmean
-        real(p) :: trg(ix,il,kx,ntr), sigdt(ix,il,kx+1)
-        real(p) :: temp(ix,il,kx+1), sigm(ix,il,kx+1)
+        real(p), dimension(:,:,:), allocatable :: ug, vg, tg, vorg, divg, tgg, puv
+        real(p), dimension(:,:), allocatable :: px, py, umean, vmean, dmean
+        real(p), allocatable :: trg(:,:,:,:), sigdt(:,:,:)
+        real(p), allocatable :: temp(:,:,:), sigm(:,:,:)
 
         integer :: k, i, itr, j
 
+        allocate(utend(ix,il,kx), vtend(ix,il,kx), ttend(ix,il,kx),trtend(ix,il,kx,ntr), &
+            ug(ix,il,kx), vg(ix,il,kx), tg(ix,il,kx), vorg(ix,il,kx), &
+            divg(ix,il,kx), tgg(ix,il,kx), puv(ix,il,kx), &
+            px(ix,il), py(ix,il), umean(ix,il), vmean(ix,il), dmean(ix,il), &
+            trg(ix,il,kx,ntr), sigdt(ix,il,kx+1), &
+            temp(ix,il,kx+1), sigm(ix,il,kx+1))
         ! =========================================================================
         ! Convert prognostics to grid point space
         ! =========================================================================
@@ -250,10 +256,11 @@ contains
         complex(p), intent(inout) :: psdt(mx,nx), divdt(mx,nx,kx), tdt(mx,nx,kx)
         integer, intent(in) :: j2
 
-        complex(p) :: dumk(mx,nx,kx+1), dmeanc(mx,nx), sigdtc(mx,nx,kx+1)
+        complex(p), allocatable :: dumk(:,:,:), dmeanc(:,:), sigdtc(:,:,:)
 
         integer :: k
 
+        allocate (dumk(mx,nx,kx+1), dmeanc(mx,nx), sigdtc(mx,nx,kx+1))
         ! Vertical mean div and pressure tendency
         dmeanc(:,:) = (0.0, 0.0)
         do k = 1, kx

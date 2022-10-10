@@ -170,9 +170,10 @@ contains
         complex(p), intent(inout) :: tdt(mx,nx,kx)   !! Temperature tendency
         complex(p), intent(inout) :: psdt(mx,nx)     !! log(surface pressure) tendency
 
-        complex(p) ::  ye(mx,nx,kx), yf(mx,nx,kx)
+        complex(p), dimension(:,:,:), allocatable ::  ye, yf
         integer :: k1, k, m, n
 
+        allocate(ye(mx,nx,kx), yf(mx,nx,kx))
         ye(:,:,:) = (0.0, 0.0)
 
         do k1=1,kx

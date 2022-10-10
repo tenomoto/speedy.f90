@@ -25,9 +25,10 @@ contains
         character(len=*), intent(in) :: field_name !! The field to read
 
         integer :: ncid, varid
-        real(sp), dimension(ix,il) :: raw_input
-        real(p), dimension(ix,il)  :: field
+        real(sp), dimension(:,:), allocatable :: raw_input
+        real(p), dimension(:,:), allocatable  :: field
 
+        allocate(raw_input(ix,il), field(ix,il))
         ! Open boundary file, read variable and then close
         call check(nf90_open(file_name, nf90_nowrite, ncid))
         call check(nf90_inq_varid(ncid, field_name, varid))
@@ -47,9 +48,10 @@ contains
         integer, intent(in)          :: month      !! The month to read
 
         integer :: ncid, varid
-        real(sp), dimension(ix,il,12) :: raw_input
-        real(p), dimension(ix,il)     :: field
+        real(sp), dimension(:,:,:), allocatable :: raw_input
+        real(p), dimension(:,:), allocatable     :: field
 
+        allocate(raw_input(ix,il,12), field(ix,il))
         ! Open boundary file, read variable and then close
         call check(nf90_open(file_name, nf90_nowrite, ncid))
         call check(nf90_inq_varid(ncid, field_name, varid))
@@ -96,9 +98,10 @@ contains
         character(len=*), intent(in) :: field_name !! The field to read
 
         integer :: ncid, varid
-        real(sp), dimension(ix,il,kx) :: raw_input
-        real(p), dimension(ix,il,kx)  :: field
-! debug
+        real(sp), dimension(:,:,:), allocatable :: raw_input
+        real(p), dimension(:,:,:), allocatable  :: field
+
+        allocate(raw_input(ix,il,kx), field(ix,il,kx))
         ! Open boundary file, read variable and then close
         call check(nf90_open(file_name, nf90_nowrite, ncid))
         call check(nf90_inq_varid(ncid, field_name, varid))
@@ -128,16 +131,20 @@ contains
         complex(p), intent(in) :: phi(mx,nx,kx)      !! Geopotential
 
         complex(p), dimension(mx,nx)     :: ucos, vcos
-        real(p), dimension(ix,il,kx)  :: u_grid, v_grid, t_grid, q_grid, phi_grid
-        real(p), dimension(ix,il)     :: ps_grid
-        real(sp), dimension(ix,il,kx) :: u_out, v_out, t_out, q_out, phi_out
-        real(sp), dimension(ix,il)    :: ps_out
+        real(p), dimension(:,:,:), allocatable  :: u_grid, v_grid, t_grid, q_grid, phi_grid
+        real(p), dimension(:,:), allocatable    :: ps_grid
+        real(sp), dimension(:,:,:), allocatable :: u_out, v_out, t_out, q_out, phi_out
+        real(sp), dimension(:,:), allocatable   :: ps_out
         character(len=15) :: file_name = 'yyyymmddhhmm.nc'
         character(len=32) :: time_template = 'hours since yyyy-mm-dd hh:mm:0.0'
         integer :: k, ncid
         integer :: timedim, latdim, londim, levdim
         integer :: timevar, latvar, lonvar, levvar, uvar, vvar, tvar, qvar, phivar, psvar
 
+        allocate(u_grid(ix,il,kx), v_grid(ix,il,kx), t_grid(ix,il,kx), &
+            q_grid(ix,il,kx), phi_grid(ix,il,kx), ps_grid(ix,il), &
+            u_out(ix,il,kx), v_out(ix,il,kx), t_out(ix,il,kx), &
+            q_out(ix,il,kx), phi_out(ix,il,kx), ps_out(ix,il))
         ! Construct file_name
         write (file_name(1:4),'(i4.4)') model_datetime%year
         write (file_name(5:6),'(i2.2)') model_datetime%month

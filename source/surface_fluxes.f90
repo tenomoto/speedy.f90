@@ -74,7 +74,7 @@ contains
 
         integer :: i, j, ks, nl1
         real(p), dimension(ix,il,2), save :: t1, q1
-        real(p), dimension(ix,il,2) :: t2, qsat0
+        real(p), dimension(:,:,:), allocatable :: t2, qsat0
         real(p), save :: denvvs(ix,il,0:2)
         real(p) :: dslr(ix,il), dtskin(ix,il), clamb(ix,il), astab, cdldv, cdsdv(ix,il), chlcp
         real(p) :: dt1, dthl, dths, esbc, ghum0, gtemp0
@@ -83,6 +83,7 @@ contains
         logical lscasym, lskineb
 
 
+        allocate(t2(ix,il,2), qsat0(ix,il,2))
         lscasym = .true.   ! true : use an asymmetric stability coefficient
         lskineb = .true.   ! true : redefine skin temp. from energy balance
 

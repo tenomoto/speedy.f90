@@ -41,14 +41,17 @@ contains
 
         integer, intent(in) :: j1, j2
         real(p), intent(in) :: dt
-        complex(p), dimension(mx,nx,kx) ::  vordt, divdt, tdt
-        complex(p) :: psdt(mx,nx), trdt(mx,nx,kx,ntr)
+        complex(p), dimension(:,:,:), allocatable ::  vordt, divdt, tdt
+        complex(p), allocatable :: psdt(:,:), trdt(:,:,:,:)
         real(p) :: eps, sdrag
 
-        complex(p) :: ctmp(mx,nx,kx)
+        complex(p), dimension(:,:,:), allocatable :: ctmp
 
         integer :: n, itr, k, m
 
+        allocate (vordt(mx,nx,kx), divdt(mx,nx,kx), tdt(mx,nx,kx), &
+            psdt(mx,nx), trdt(mx,nx,kx,ntr), &
+            ctmp(mx,nx,kx))
         ! =========================================================================
         ! Compute tendencies of prognostic variables
         ! =========================================================================

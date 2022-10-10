@@ -49,9 +49,10 @@ module sppt
             real(p) :: sppt_grid(ix,il,kx) !! The generated grid point pattern
 
             integer :: m, n, k
-            complex(p) :: eta(mx,nx,kx)
+            complex(p), dimension(:,:,:), allocatable :: eta
             real(p) :: f0, randreal, randimag
 
+            allocate (eta(mx,nx,kx))
             ! Seed RNG if first use of SPPT
             if (first) call time_seed()
 

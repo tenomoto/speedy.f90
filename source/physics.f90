@@ -71,15 +71,30 @@ contains
         real(p), intent(inout) :: ttend(ix,il,kx) !! Temperature tendency
         real(p), intent(inout) :: qtend(ix,il,kx) !! Specific humidity tendency
 
-        complex(p), dimension(mx,nx) :: ucos, vcos
-        real(p), dimension(ix,il) :: pslg, rps, gse
-        real(p), dimension(ix,il,kx) :: ug, vg, tg, qg, phig, utend_dyn, vtend_dyn, ttend_dyn, qtend_dyn
-        real(p), dimension(ix,il,kx) :: se, rh, qsat
-        real(p), dimension(ix,il) :: psg, ts, tskin, u0, v0, t0, cloudc, clstr, cltop, prtop
-        real(p), dimension(ix,il,kx) :: tt_cnv, qt_cnv, tt_lsc, qt_lsc, tt_rsw, tt_rlw, ut_pbl, vt_pbl,&
-            & tt_pbl, qt_pbl
-        integer :: iptop(ix,il), icltop(ix,il,2), icnv(ix,il), i, j, k
-        real(p) :: sppt_pattern(ix,il,kx)
+        complex(p), dimension(:,:), allocatable :: ucos, vcos
+        real(p), dimension(:,:), allocatable :: pslg, rps, gse
+        real(p), dimension(:,:,:), allocatable :: &
+            ug, vg, tg, qg, phig, utend_dyn, vtend_dyn, ttend_dyn, qtend_dyn, &
+            se, rh, qsat
+        real(p), dimension(:,:), allocatable :: &
+            psg, ts, tskin, u0, v0, t0, cloudc, clstr, cltop, prtop
+        real(p), dimension(:,:,:), allocatable :: &
+          tt_cnv, qt_cnv, tt_lsc, qt_lsc, tt_rsw, tt_rlw, ut_pbl, vt_pbl, tt_pbl, qt_pbl
+        integer, allocatable :: iptop(:,:), icltop(:,:,:), icnv(:,:)
+        integer :: i, j, k
+        real(p), dimension(:,:,:), allocatable :: sppt_pattern
+
+        allocate(ucos(mx,nx), vcos(mx,nx), pslg(ix,il), rps(ix,il), gse(ix,il), &
+            ug(ix,il,kx), vg(ix,il,kx), tg(ix,il,kx), qg(ix,il,kx), &
+            phig(ix,il,kx), utend_dyn(ix,il,kx), vtend_dyn(ix,il,kx), &
+            ttend_dyn(ix,il,kx), qtend_dyn(ix,il,kx), &
+            se(ix,il,kx), rh(ix,il,kx), qsat(ix,il,kx), &
+            psg(ix,il), ts(ix,il), tskin(ix,il), u0(ix,il), v0(ix,il), t0(ix,il), &
+            cloudc(ix,il), clstr(ix,il), cltop(ix,il), prtop(ix,il), &
+            tt_cnv(ix,il,kx), qt_cnv(ix,il,kx), tt_lsc(ix,il,kx), qt_lsc(ix,il,kx), &
+            tt_rsw(ix,il,kx), tt_rlw(ix,il,kx), ut_pbl(ix,il,kx), vt_pbl(ix,il,kx), &
+            tt_pbl(ix,il,kx), qt_pbl(ix,il,kx), iptop(ix,il), icltop(ix,il,2), icnv(ix,il), &
+            sppt_pattern(ix,il,kx))
 
         ! Keep a copy of the original (dynamics only) tendencies
         utend_dyn = utend
